@@ -1,106 +1,84 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here.
-All colors MUST be HSL.
+/*
+  Noir & Gold design system — dark editorial portfolio
+  Palette: #0d0d0d / #1a1a1a / #c9a84c / #f0d78c
+  Typography: Syne (display) + Plus Jakarta Sans (body) + JetBrains Mono (code)
 */
 
 :root {
-  --background: hsl(0 0% 100%);
-  --foreground: hsl(240 10% 3.9%);
-  --card: hsl(0 0% 100%);
-  --card-foreground: hsl(240 10% 3.9%);
-  --popover: hsl(0 0% 100%);
-  --popover-foreground: hsl(240 10% 3.9%);
-  --primary: hsl(240 5.9% 10%);
-  --primary-foreground: hsl(0 0% 98%);
-  --secondary: hsl(240 4.8% 95.9%);
-  --secondary-foreground: hsl(240 5.9% 10%);
-  --muted: hsl(240 4.8% 95.9%);
-  --muted-foreground: hsl(240 3.8% 46.1%);
-  --accent: hsl(240 4.8% 95.9%);
-  --accent-foreground: hsl(240 5.9% 10%);
-  --destructive: hsl(0 84.2% 60.2%);
-  --destructive-foreground: hsl(0 0% 98%);
-  --border: hsl(240 5.9% 90%);
-  --input: hsl(240 5.9% 90%);
-  --ring: hsl(240 5.9% 10%);
-  --radius: 0.5rem;
-  --sidebar-background: hsl(0 0% 98%);
-  --sidebar-foreground: hsl(240 5.3% 26.1%);
-  --sidebar-primary: hsl(240 5.9% 10%);
-  --sidebar-primary-foreground: hsl(0 0% 98%);
-  --sidebar-accent: hsl(240 4.8% 95.9%);
-  --sidebar-accent-foreground: hsl(240 5.9% 10%);
-  --sidebar-border: hsl(220 13% 91%);
-  --sidebar-ring: hsl(217.2 91.2% 59.8%);
+  /* Dark-only by default — sleek noir */
+  --background: hsl(0 0% 5%);
+  --foreground: hsl(45 30% 95%);
 
-  /* Shugar Design System Variables */
-  --context-card-border: hsla(0, 0%, 92%, 1);
-  --ds-red-800: oklch(58.19% 0.2482 25.15);
-  --ds-red-900: oklch(54.99% 0.232 25.29);
-  --ds-amber-800: oklch(77.21% 0.1991 64.28);
-  --ds-amber-850: hsl(33, 96%, 42%);
-  --ds-gray-100: hsla(0, 0%, 95%, 1);
-  --ds-gray-400: hsla(0, 0%, 92%, 1);
-  --ds-gray-700: hsla(0, 0%, 56%, 1);
-  --ds-gray-1000: hsla(0, 0%, 9%, 1);
-  --ds-gray-1000-h: hsl(0, 0%, 22%);
-  --ds-gray-alpha-200: hsla(0, 0%, 0%, 0.08);
-  --ds-gray-alpha-400: hsla(0, 0%, 0%, 0.08);
-  --ds-background-100: hsla(0, 0%, 100%, 1);
-  --ds-focus-color: var(--ring);
-  --ds-focus-ring: 0 0 0 2px var(--ds-background-100), 0 0 0 4px var(--ds-focus-color);
-  --ds-shadow-border: 0 0 0 1px rgba(0, 0, 0, 0.08);
-  --ds-shadow-small: 0px 2px 2px rgba(0, 0, 0, 0.04);
-  --ds-shadow-border-small: var(--ds-shadow-border), var(--ds-shadow-small);
+  --card: hsl(0 0% 8%);
+  --card-foreground: hsl(45 30% 95%);
+
+  --popover: hsl(0 0% 8%);
+  --popover-foreground: hsl(45 30% 95%);
+
+  /* Gold primary */
+  --primary: hsl(43 50% 54%);
+  --primary-foreground: hsl(0 0% 5%);
+  --primary-glow: hsl(43 75% 75%);
+
+  --secondary: hsl(0 0% 12%);
+  --secondary-foreground: hsl(45 30% 95%);
+
+  --muted: hsl(0 0% 12%);
+  --muted-foreground: hsl(45 8% 65%);
+
+  --accent: hsl(43 50% 54%);
+  --accent-foreground: hsl(0 0% 5%);
+
+  --destructive: hsl(0 70% 50%);
+  --destructive-foreground: hsl(0 0% 98%);
+
+  --border: hsl(0 0% 14%);
+  --input: hsl(0 0% 14%);
+  --ring: hsl(43 50% 54%);
+
+  --radius: 1rem;
+
+  --sidebar-background: hsl(0 0% 5%);
+  --sidebar-foreground: hsl(45 30% 95%);
+  --sidebar-primary: hsl(43 50% 54%);
+  --sidebar-primary-foreground: hsl(0 0% 5%);
+  --sidebar-accent: hsl(0 0% 12%);
+  --sidebar-accent-foreground: hsl(45 30% 95%);
+  --sidebar-border: hsl(0 0% 14%);
+  --sidebar-ring: hsl(43 50% 54%);
+
+  /* Gradients */
+  --gradient-gold: linear-gradient(135deg, hsl(43 50% 54%) 0%, hsl(43 75% 75%) 100%);
+  --gradient-noir: radial-gradient(ellipse at top, hsl(0 0% 10%) 0%, hsl(0 0% 4%) 70%);
+  --gradient-shine: linear-gradient(90deg, transparent, hsl(43 75% 75% / 0.4), transparent);
+
+  /* Shadows */
+  --shadow-gold: 0 10px 40px -10px hsl(43 50% 54% / 0.35);
+  --shadow-card: 0 1px 0 0 hsl(45 30% 95% / 0.04) inset, 0 8px 32px -8px hsl(0 0% 0% / 0.6);
 }
 
 .dark {
-  --background: hsl(240 10% 3.9%);
-  --foreground: hsl(0 0% 98%);
-  --card: hsl(240 10% 3.9%);
-  --card-foreground: hsl(0 0% 98%);
-  --popover: hsl(240 10% 3.9%);
-  --popover-foreground: hsl(0 0% 98%);
-  --primary: hsl(0 0% 98%);
-  --primary-foreground: hsl(240 5.9% 10%);
-  --secondary: hsl(240 3.7% 15.9%);
-  --secondary-foreground: hsl(0 0% 98%);
-  --muted: hsl(240 3.7% 15.9%);
-  --muted-foreground: hsl(240 5% 64.9%);
-  --accent: hsl(240 3.7% 15.9%);
-  --accent-foreground: hsl(0 0% 98%);
-  --destructive: hsl(0 62.8% 30.6%);
-  --destructive-foreground: hsl(0 0% 98%);
-  --border: hsl(240 3.7% 15.9%);
-  --input: hsl(240 3.7% 15.9%);
-  --ring: hsl(240 4.9% 83.9%);
-  --sidebar-background: hsl(240 5.9% 10%);
-  --sidebar-foreground: hsl(240 4.8% 95.9%);
-  --sidebar-primary: hsl(224.3 76.3% 48%);
-  --sidebar-primary-foreground: hsl(0 0% 100%);
-  --sidebar-accent: hsl(240 3.7% 15.9%);
-  --sidebar-accent-foreground: hsl(240 4.8% 95.9%);
-  --sidebar-border: hsl(240 3.7% 15.9%);
-  --sidebar-ring: hsl(217.2 91.2% 59.8%);
-
-  /* Shugar Design System Variables - Dark Mode */
-  --context-card-border: hsla(0, 0%, 18%, 1);
-  --ds-red-800: oklch(58.01% 0.227 25.12);
-  --ds-red-900: oklch(69.96% 0.2136 22.03);
-  --ds-amber-800: oklch(77.21% 0.1991 64.28);
-  --ds-gray-100: hsla(0, 0%, 10%, 1);
-  --ds-gray-400: hsla(0, 0%, 18%, 1);
-  --ds-gray-700: hsla(0, 0%, 56%, 1);
-  --ds-gray-1000: hsla(0, 0%, 93%, 1);
-  --ds-gray-1000-h: hsl(0, 0%, 80%);
-  --ds-gray-alpha-200: hsla(0, 0%, 100%, 0.09);
-  --ds-gray-alpha-400: hsla(0, 0%, 100%, 0.14);
-  --ds-background-100: hsla(0,0%,4%, 1);
-  --ds-shadow-border: 0 0 0 1px rgba(255, 255, 255, 0.145);
-  --ds-shadow-small: 0px 1px 2px rgba(0, 0, 0, 0.16);
-  --ds-shadow-border-small: var(--ds-shadow-border), var(--ds-shadow-small);
+  /* Mirror — site is dark-first */
+  --background: hsl(0 0% 5%);
+  --foreground: hsl(45 30% 95%);
+  --card: hsl(0 0% 8%);
+  --card-foreground: hsl(45 30% 95%);
+  --popover: hsl(0 0% 8%);
+  --popover-foreground: hsl(45 30% 95%);
+  --primary: hsl(43 50% 54%);
+  --primary-foreground: hsl(0 0% 5%);
+  --secondary: hsl(0 0% 12%);
+  --secondary-foreground: hsl(45 30% 95%);
+  --muted: hsl(0 0% 12%);
+  --muted-foreground: hsl(45 8% 65%);
+  --accent: hsl(43 50% 54%);
+  --accent-foreground: hsl(0 0% 5%);
+  --border: hsl(0 0% 14%);
+  --input: hsl(0 0% 14%);
+  --ring: hsl(43 50% 54%);
 }
 
 @theme {
@@ -112,6 +90,7 @@ All colors MUST be HSL.
   --color-popover-foreground: var(--popover-foreground);
   --color-primary: var(--primary);
   --color-primary-foreground: var(--primary-foreground);
+  --color-primary-glow: var(--primary-glow);
   --color-secondary: var(--secondary);
   --color-secondary-foreground: var(--secondary-foreground);
   --color-muted: var(--muted);
@@ -132,66 +111,126 @@ All colors MUST be HSL.
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
 
-  /* Shugar Design System Colors */
-  --color-context-card-border: var(--context-card-border);
-  --color-red-800: var(--ds-red-800);
-  --color-red-900: var(--ds-red-900);
-  --color-amber-800: var(--ds-amber-800);
-  --color-amber-850: var(--ds-amber-850);
-  --color-gray-100: var(--ds-gray-100);
-  --color-gray-400: var(--ds-gray-400);
-  --color-gray-700: var(--ds-gray-700);
-  --color-gray-1000: var(--ds-gray-1000);
-  --color-gray-1000-h: var(--ds-gray-1000-h);
-  --color-gray-alpha-200: var(--ds-gray-alpha-200);
-  --color-gray-alpha-400: var(--ds-gray-alpha-400);
-  --color-background-100: var(--ds-background-100);
-  --shadow-focus-ring: var(--ds-focus-ring);
-  --shadow-border-small: var(--ds-shadow-border-small);
+  --font-display: 'Syne', 'Plus Jakarta Sans', system-ui, sans-serif;
+  --font-sans: 'Plus Jakarta Sans', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
 
   --radius-lg: var(--radius);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 4px);
+  --radius-sm: calc(var(--radius) - 8px);
 
   --animate-accordion-down: accordion-down 0.2s ease-out;
   --animate-accordion-up: accordion-up 0.2s ease-out;
+  --animate-shimmer: shimmer 6s linear infinite;
+  --animate-float: float 8s ease-in-out infinite;
+  --animate-grain: grain 8s steps(10) infinite;
 }
 
 @keyframes accordion-down {
-  from {
-    height: 0;
-  }
-  to {
-    height: var(--radix-accordion-content-height);
-  }
+  from { height: 0; }
+  to { height: var(--radix-accordion-content-height); }
 }
-
 @keyframes accordion-up {
-  from {
-    height: var(--radix-accordion-content-height);
-  }
-  to {
-    height: 0;
-  }
+  from { height: var(--radix-accordion-content-height); }
+  to { height: 0; }
+}
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-12px); }
+}
+@keyframes grain {
+  0%, 100% { transform: translate(0, 0); }
+  10% { transform: translate(-5%, -5%); }
+  30% { transform: translate(3%, -8%); }
+  50% { transform: translate(-3%, 5%); }
+  70% { transform: translate(5%, 3%); }
+  90% { transform: translate(-5%, -3%); }
 }
 
 @layer base {
-  * {
-    @apply border-border;
-  }
-
+  * { @apply border-border; }
+  html { scroll-behavior: smooth; }
   body {
     @apply bg-background text-foreground;
+    font-family: var(--font-sans);
+    font-feature-settings: "ss01", "ss02", "cv01";
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
+  h1, h2, h3, h4, h5, h6 { font-family: var(--font-display); letter-spacing: -0.02em; }
+  ::selection { background: hsl(43 50% 54% / 0.4); color: hsl(45 30% 98%); }
 }
 
 @layer utilities {
-  .hide-scrollbar {
-    scrollbar-width: none;
-    -ms-overflow-style: none;
+  .font-display { font-family: var(--font-display); }
+  .font-mono { font-family: var(--font-mono); }
+
+  .text-gold {
+    background: var(--gradient-gold);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
   }
 
-  .hide-scrollbar::-webkit-scrollbar {
-    display: none;
+  .bg-noir { background: var(--gradient-noir); }
+  .bg-gold { background: var(--gradient-gold); }
+  .shadow-gold { box-shadow: var(--shadow-gold); }
+  .shadow-card { box-shadow: var(--shadow-card); }
+
+  .hide-scrollbar { scrollbar-width: none; -ms-overflow-style: none; }
+  .hide-scrollbar::-webkit-scrollbar { display: none; }
+
+  /* Grid backdrop for tech feel */
+  .bg-grid {
+    background-image:
+      linear-gradient(hsl(45 30% 95% / 0.04) 1px, transparent 1px),
+      linear-gradient(90deg, hsl(45 30% 95% / 0.04) 1px, transparent 1px);
+    background-size: 48px 48px;
   }
+
+  /* Subtle noise overlay */
+  .bg-grain::after {
+    content: "";
+    position: absolute;
+    inset: -50%;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 0.85  0 0 0 0 0.4  0 0 0 0.08 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+    pointer-events: none;
+    opacity: 0.4;
+    mix-blend-mode: overlay;
+    animation: grain 8s steps(10) infinite;
+  }
+
+  .glass {
+    background: hsl(0 0% 8% / 0.6);
+    backdrop-filter: blur(16px) saturate(140%);
+    -webkit-backdrop-filter: blur(16px) saturate(140%);
+    border: 1px solid hsl(45 30% 95% / 0.06);
+  }
+
+  .bento-card {
+    @apply relative overflow-hidden rounded-2xl border border-border bg-card p-6 transition-all duration-500;
+    box-shadow: var(--shadow-card);
+  }
+  .bento-card:hover {
+    border-color: hsl(43 50% 54% / 0.4);
+    transform: translateY(-2px);
+  }
+
+  .shine {
+    position: relative;
+    overflow: hidden;
+  }
+  .shine::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: var(--gradient-shine);
+    transform: translateX(-100%);
+    transition: transform 0.8s ease;
+  }
+  .shine:hover::before { transform: translateX(100%); }
 }
