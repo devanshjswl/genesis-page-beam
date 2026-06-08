@@ -37,8 +37,10 @@ const emptyForm: FormState = {
 
 export default function AdminProjects() {
   const [projects, setProjects] = useState<Project[]>([]);
+  const [imageUrls, setImageUrls] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState<FormState | null>(null);
+  const [editingPreview, setEditingPreview] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
 
@@ -51,11 +53,25 @@ export default function AdminProjects() {
       .order("sort_order", { ascending: true })
       .order("created_at", { ascending: false });
     if (error) toast.error(error.message);
-    else setProjects((data ?? []) as Project[]);
+    else {
+      const list = (data ?? []) as Project[];
+      setProjects(list);
+      const entries = await Promise.all(
+        list.map(async (p) => [p.id, (await resolveProjectImage(p.image_url)) ?? ""] as const),
+      );
+      setImageUrls(Object.fromEntries(entries.filter(([, u]) => u)));
+    }
     setLoading(false);
   };
 
   useEffect(() => { load(); }, []);
+
+  useEffect(() => {
+    let active = true;
+    if (!editing?.image_url) { setEditingPreview(null); return; }
+    resolveProjectImage(editing.image_url).then((u) => { if (active) setEditingPreview(u); });
+    return () => { active = false; };
+  }, [editing?.image_url]);
 
   const startNew = () => setEditing({ ...emptyForm });
   const startEdit = (p: Project) =>
@@ -72,8 +88,7 @@ export default function AdminProjects() {
       const path = `${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
       const { error: upErr } = await supabase.storage.from("project-images").upload(path, file, { upsert: false });
       if (upErr) throw upErr;
-      const { data } = supabase.storage.from("project-images").getPublicUrl(path);
-      setEditing((cur) => (cur ? { ...cur, image_url: data.publicUrl } : cur));
+      setEditing((cur) => (cur ? { ...cur, image_url: path } : cur));
       toast.success("Image uploaded");
     } catch (err: any) {
       toast.error(err?.message ?? "Upload failed");
@@ -81,6 +96,7 @@ export default function AdminProjects() {
       setUploading(false);
     }
   };
+
 
   const save = async () => {
     if (!editing) return;
