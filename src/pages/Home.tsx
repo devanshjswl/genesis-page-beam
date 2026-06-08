@@ -704,7 +704,7 @@ function Contact() {
                 className="w-full bg-gold text-primary-foreground hover:opacity-90 shadow-gold shine"
               >
                 <Send className="size-4 mr-2" />
-                {sending ? "Opening…" : "Send message"}
+                {sending ? "Sending…" : "Send message"}
               </Button>
             </form>
           </Reveal>
