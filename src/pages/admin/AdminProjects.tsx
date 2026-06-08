@@ -5,6 +5,8 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Plus, Pencil, Trash2, Star, ExternalLink, X, ImagePlus, Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import { resolveProjectImage } from "@/lib/projectImage";
+
 
 type Project = {
   id: string;
