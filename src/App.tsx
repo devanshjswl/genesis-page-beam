@@ -8,6 +8,10 @@ import { lazy, Suspense } from "react";
 
 const Home = lazy(() => import("./pages/Home"));
 const NotFound = lazy(() => import("./pages/NotFound"));
+const AdminAuth = lazy(() => import("./pages/auth/AdminAuth"));
+const AdminLayout = lazy(() => import("./pages/admin/AdminLayout"));
+const AdminMessages = lazy(() => import("./pages/admin/AdminMessages"));
+const AdminProjects = lazy(() => import("./pages/admin/AdminProjects"));
 
 const queryClient = new QueryClient();
 
@@ -21,6 +25,11 @@ const App = () => (
           <Suspense fallback={<div className="min-h-screen bg-background" />}>
             <Routes>
               <Route path="/" element={<Home />} />
+              <Route path="/admin/auth" element={<AdminAuth />} />
+              <Route path="/admin" element={<AdminLayout />}>
+                <Route index element={<AdminMessages />} />
+                <Route path="projects" element={<AdminProjects />} />
+              </Route>
               <Route path="*" element={<NotFound />} />
             </Routes>
           </Suspense>

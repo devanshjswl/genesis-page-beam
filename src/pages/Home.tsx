@@ -23,6 +23,9 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { photographerInfo as me } from "@/data/photographer";
+import { supabase } from "@/integrations/supabase/client";
+import { resolveProjectImage } from "@/lib/projectImage";
+
 
 /* ------------------------------------------------------------------ */
 /* Animated tech background — pure CSS canvas of subtle moving lines  */
@@ -309,56 +312,84 @@ function SectionLabel({ children }: { children: React.ReactNode }) {
 }
 
 /* ------------------------------------------------------------------ */
-/* Work / Projects                                                    */
+/* Work / Projects (DB-driven with hardcoded fallback)               */
 /* ------------------------------------------------------------------ */
-const projects = [
+type DBProject = {
+  id: string;
+  title: string;
+  blurb: string;
+  tags: string[];
+  image_url: string | null;
+  link_url: string | null;
+  featured: boolean;
+};
+
+const fallbackProjects: Array<{
+  id: string;
+  title: string;
+  blurb: string;
+  tags: string[];
+  icon: typeof Calculator;
+  featured: boolean;
+  link_url: string | null;
+}> = [
   {
+    id: "f1",
     title: "JEE Main Score Calculator",
     blurb:
       "An ultra-smooth, instant score & percentile calculator built for JEE aspirants. Optimised for speed, animations and zero-friction input.",
     tags: ["React", "TypeScript", "Tailwind"],
     icon: Calculator,
-    accent: "from-primary/30 to-transparent",
-    span: "md:col-span-2 md:row-span-2",
     featured: true,
+    link_url: null,
   },
   {
+    id: "f2",
     title: "Real-Time Study Tracker",
     blurb:
       "A synchronized web app where study sessions update live across devices. Built with vanilla JS + Firebase Realtime DB.",
     tags: ["HTML", "CSS", "JS", "Firebase"],
     icon: BookOpen,
-    accent: "from-primary/20 to-transparent",
-    span: "md:col-span-2",
+    featured: false,
+    link_url: null,
   },
   {
+    id: "f3",
     title: "@the.poligion",
     blurb:
       "Editorial Instagram page exploring culture, ideas & politics — content design, captions and growth, end to end.",
     tags: ["Instagram", "Editorial"],
     icon: Instagram,
-    accent: "from-primary/20 to-transparent",
-    span: "md:col-span-2",
-  },
-  {
-    title: "YouTube Production",
-    blurb: "Scripting, shooting & editing short-form and long-form videos for myself and creator clients.",
-    tags: ["Video", "Editing"],
-    icon: Video,
-    accent: "from-primary/15 to-transparent",
-    span: "md:col-span-2",
-  },
-  {
-    title: "Social Content Ops",
-    blurb: "Calendars, captions, hooks, thumbnails — running the full content engine for digital creators.",
-    tags: ["Content", "Strategy"],
-    icon: Camera,
-    accent: "from-primary/15 to-transparent",
-    span: "md:col-span-2",
+    featured: false,
+    link_url: me.socialLinks.instagram,
   },
 ];
 
 function Work() {
+  const [projects, setProjects] = useState<DBProject[]>([]);
+  const [imageUrls, setImageUrls] = useState<Record<string, string>>({});
+  const [loaded, setLoaded] = useState(false);
+
+  useEffect(() => {
+    (async () => {
+      const { data } = await supabase
+        .from("projects")
+        .select("id,title,blurb,tags,image_url,link_url,featured")
+        .order("featured", { ascending: false })
+        .order("sort_order", { ascending: true })
+        .order("created_at", { ascending: false });
+      const list = (data ?? []) as DBProject[];
+      setProjects(list);
+      setLoaded(true);
+      const entries = await Promise.all(
+        list.map(async (p) => [p.id, (await resolveProjectImage(p.image_url)) ?? ""] as const),
+      );
+      setImageUrls(Object.fromEntries(entries.filter(([, u]) => u)));
+    })();
+  }, []);
+
+  const usingDb = projects.length > 0;
+
   return (
     <section id="work" className="relative py-28 md:py-40 px-6">
       <div className="max-w-6xl mx-auto">
@@ -376,64 +407,84 @@ function Work() {
           </div>
         </Reveal>
 
-        <div className="grid grid-cols-1 md:grid-cols-4 auto-rows-[minmax(180px,auto)] gap-4 md:gap-5">
-          {projects.map((p, i) => {
-            const Icon = p.icon;
-            return (
-              <Reveal key={p.title} delay={i * 0.06}>
-                <article
-                  className={`bento-card group h-full ${p.span ?? ""} ${
-                    p.featured ? "min-h-[360px]" : ""
-                  }`}
-                >
-                  {/* Accent glow */}
-                  <div
-                    className={`pointer-events-none absolute -top-20 -right-20 size-64 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-700 bg-gradient-radial ${p.accent}`}
-                    style={{
-                      background:
-                        "radial-gradient(circle, rgba(201,168,76,0.25) 0%, transparent 70%)",
-                    }}
-                  />
-
-                  <div className="relative flex flex-col h-full">
-                    <div className="flex items-start justify-between">
-                      <div className="size-11 rounded-xl bg-secondary border border-border grid place-items-center text-primary group-hover:bg-gold group-hover:text-primary-foreground group-hover:border-transparent transition-all duration-500">
-                        <Icon className="size-5" strokeWidth={1.6} />
+        {!loaded ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5">
+            {[...Array(3)].map((_, i) => (
+              <div key={i} className="bento-card h-64 animate-pulse" />
+            ))}
+          </div>
+        ) : usingDb ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5">
+            {projects.map((p, i) => {
+              const card = (
+                <article className={`bento-card group h-full !p-0 overflow-hidden flex flex-col ${p.featured ? "lg:col-span-2" : ""}`}>
+                  {imageUrls[p.id] ? (
+                    <img src={imageUrls[p.id]} alt={p.title} className={`w-full object-cover ${p.featured ? "h-56 md:h-72" : "h-48"}`} />
+                  ) : (
+                    <div className={`w-full bg-secondary grid place-items-center ${p.featured ? "h-56 md:h-72" : "h-48"}`}>
+                      <Code2 className="size-8 text-muted-foreground/40" />
+                    </div>
+                  )}
+                  <div className="p-6 flex flex-col flex-1">
+                    <div className="flex items-start justify-between gap-3">
+                      <h3 className={`font-display font-semibold tracking-tight ${p.featured ? "text-2xl" : "text-lg"}`}>{p.title}</h3>
+                      {p.link_url && <ArrowUpRight className="size-5 text-muted-foreground group-hover:text-primary group-hover:-translate-y-0.5 group-hover:translate-x-0.5 transition-all shrink-0" />}
+                    </div>
+                    <p className="mt-3 text-sm text-muted-foreground leading-relaxed flex-1">{p.blurb}</p>
+                    {p.tags.length > 0 && (
+                      <div className="mt-5 flex flex-wrap gap-1.5">
+                        {p.tags.map((t) => (
+                          <span key={t} className="text-[10px] font-mono uppercase tracking-wider px-2 py-1 rounded-md bg-secondary text-muted-foreground border border-border">{t}</span>
+                        ))}
                       </div>
-                      <ArrowUpRight className="size-5 text-muted-foreground group-hover:text-primary group-hover:-translate-y-0.5 group-hover:translate-x-0.5 transition-all" />
-                    </div>
-
-                    <h3
-                      className={`mt-6 font-display font-semibold tracking-tight ${
-                        p.featured ? "text-2xl md:text-3xl" : "text-xl"
-                      }`}
-                    >
-                      {p.title}
-                    </h3>
-                    <p className="mt-3 text-sm text-muted-foreground leading-relaxed flex-1">
-                      {p.blurb}
-                    </p>
-
-                    <div className="mt-6 flex flex-wrap gap-1.5">
-                      {p.tags.map((t) => (
-                        <span
-                          key={t}
-                          className="text-[10px] font-mono uppercase tracking-wider px-2 py-1 rounded-md bg-secondary text-muted-foreground border border-border"
-                        >
-                          {t}
-                        </span>
-                      ))}
-                    </div>
+                    )}
                   </div>
                 </article>
-              </Reveal>
-            );
-          })}
-        </div>
+              );
+              return (
+                <Reveal key={p.id} delay={i * 0.06}>
+                  {p.link_url ? (
+                    <a href={p.link_url} target="_blank" rel="noopener noreferrer" className="block h-full">{card}</a>
+                  ) : (
+                    card
+                  )}
+                </Reveal>
+              );
+            })}
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-4 auto-rows-[minmax(180px,auto)] gap-4 md:gap-5">
+            {fallbackProjects.map((p, i) => {
+              const Icon = p.icon;
+              return (
+                <Reveal key={p.id} delay={i * 0.06}>
+                  <article className={`bento-card group h-full ${p.featured ? "md:col-span-2 md:row-span-2 min-h-[360px]" : "md:col-span-2"}`}>
+                    <div className="relative flex flex-col h-full">
+                      <div className="flex items-start justify-between">
+                        <div className="size-11 rounded-xl bg-secondary border border-border grid place-items-center text-primary group-hover:bg-gold group-hover:text-primary-foreground group-hover:border-transparent transition-all duration-500">
+                          <Icon className="size-5" strokeWidth={1.6} />
+                        </div>
+                        <ArrowUpRight className="size-5 text-muted-foreground group-hover:text-primary transition-all" />
+                      </div>
+                      <h3 className={`mt-6 font-display font-semibold tracking-tight ${p.featured ? "text-2xl md:text-3xl" : "text-xl"}`}>{p.title}</h3>
+                      <p className="mt-3 text-sm text-muted-foreground leading-relaxed flex-1">{p.blurb}</p>
+                      <div className="mt-6 flex flex-wrap gap-1.5">
+                        {p.tags.map((t) => (
+                          <span key={t} className="text-[10px] font-mono uppercase tracking-wider px-2 py-1 rounded-md bg-secondary text-muted-foreground border border-border">{t}</span>
+                        ))}
+                      </div>
+                    </div>
+                  </article>
+                </Reveal>
+              );
+            })}
+          </div>
+        )}
       </div>
     </section>
   );
 }
+
 
 /* ------------------------------------------------------------------ */
 /* About                                                              */
@@ -557,20 +608,31 @@ function Contact() {
     }
   };
 
-  const onSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setSending(true);
     const form = e.currentTarget;
     const data = new FormData(form);
-    const subject = encodeURIComponent(`Portfolio inquiry — ${data.get("name") || "Hello"}`);
-    const body = encodeURIComponent(`${data.get("message") || ""}\n\n— ${data.get("name") || ""}\n${data.get("email") || ""}`);
-    window.location.href = `mailto:${me.email}?subject=${subject}&body=${body}`;
-    setTimeout(() => {
+    const payload = {
+      name: String(data.get("name") || "").trim(),
+      email: String(data.get("email") || "").trim(),
+      message: String(data.get("message") || "").trim(),
+    };
+    if (!payload.name || !payload.email || !payload.message) {
+      toast.error("Please fill in all fields");
       setSending(false);
-      toast.success("Opening your mail client…");
-      form.reset();
-    }, 600);
+      return;
+    }
+    const { error } = await supabase.from("messages").insert(payload);
+    setSending(false);
+    if (error) {
+      toast.error("Couldn't send — please try again");
+      return;
+    }
+    toast.success("Message sent — I'll get back to you soon.");
+    form.reset();
   };
+
 
   return (
     <section id="contact" className="relative py-28 md:py-40 px-6 overflow-hidden">
@@ -642,7 +704,7 @@ function Contact() {
                 className="w-full bg-gold text-primary-foreground hover:opacity-90 shadow-gold shine"
               >
                 <Send className="size-4 mr-2" />
-                {sending ? "Opening…" : "Send message"}
+                {sending ? "Sending…" : "Send message"}
               </Button>
             </form>
           </Reveal>
