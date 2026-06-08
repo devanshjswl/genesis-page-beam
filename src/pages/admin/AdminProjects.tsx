@@ -154,11 +154,12 @@ export default function AdminProjects() {
         <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-4">
           {projects.map((p) => (
             <article key={p.id} className="bento-card !p-0 overflow-hidden flex flex-col">
-              {p.image_url ? (
-                <img src={p.image_url} alt={p.title} className="w-full h-44 object-cover" />
+              {imageUrls[p.id] ? (
+                <img src={imageUrls[p.id]} alt={p.title} className="w-full h-44 object-cover" />
               ) : (
                 <div className="w-full h-44 bg-secondary grid place-items-center text-muted-foreground text-xs">No image</div>
               )}
+
               <div className="p-5 flex flex-col flex-1">
                 <div className="flex items-start justify-between gap-3">
                   <h3 className="font-display font-semibold text-lg leading-tight">{p.title}</h3>
