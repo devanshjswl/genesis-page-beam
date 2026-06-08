@@ -23,6 +23,9 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { photographerInfo as me } from "@/data/photographer";
+import { supabase } from "@/integrations/supabase/client";
+import { resolveProjectImage } from "@/lib/projectImage";
+
 
 /* ------------------------------------------------------------------ */
 /* Animated tech background — pure CSS canvas of subtle moving lines  */
