@@ -223,13 +223,14 @@ export default function AdminProjects() {
               <div className="space-y-1.5">
                 <label className="text-xs font-mono uppercase tracking-widest text-muted-foreground">Image</label>
                 <div className="flex items-center gap-4">
-                  {editing.image_url ? (
-                    <img src={editing.image_url} alt="" className="size-20 rounded-lg object-cover border border-border" />
+                  {editingPreview ? (
+                    <img src={editingPreview} alt="" className="size-20 rounded-lg object-cover border border-border" />
                   ) : (
                     <div className="size-20 rounded-lg bg-secondary border border-border grid place-items-center text-muted-foreground">
                       <ImagePlus className="size-5" />
                     </div>
                   )}
+
                   <label className="cursor-pointer inline-flex items-center gap-2 rounded-lg border border-border bg-secondary px-4 py-2 text-sm hover:border-primary/50 transition">
                     {uploading ? <Loader2 className="size-4 animate-spin" /> : <ImagePlus className="size-4" />}
                     {uploading ? "Uploading…" : editing.image_url ? "Replace image" : "Upload image"}
