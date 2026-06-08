@@ -608,20 +608,31 @@ function Contact() {
     }
   };
 
-  const onSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const onSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setSending(true);
     const form = e.currentTarget;
     const data = new FormData(form);
-    const subject = encodeURIComponent(`Portfolio inquiry — ${data.get("name") || "Hello"}`);
-    const body = encodeURIComponent(`${data.get("message") || ""}\n\n— ${data.get("name") || ""}\n${data.get("email") || ""}`);
-    window.location.href = `mailto:${me.email}?subject=${subject}&body=${body}`;
-    setTimeout(() => {
+    const payload = {
+      name: String(data.get("name") || "").trim(),
+      email: String(data.get("email") || "").trim(),
+      message: String(data.get("message") || "").trim(),
+    };
+    if (!payload.name || !payload.email || !payload.message) {
+      toast.error("Please fill in all fields");
       setSending(false);
-      toast.success("Opening your mail client…");
-      form.reset();
-    }, 600);
+      return;
+    }
+    const { error } = await supabase.from("messages").insert(payload);
+    setSending(false);
+    if (error) {
+      toast.error("Couldn't send — please try again");
+      return;
+    }
+    toast.success("Message sent — I'll get back to you soon.");
+    form.reset();
   };
+
 
   return (
     <section id="contact" className="relative py-28 md:py-40 px-6 overflow-hidden">
