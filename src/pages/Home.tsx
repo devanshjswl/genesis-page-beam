@@ -657,8 +657,9 @@ function Contact() {
 
         <div className="grid md:grid-cols-5 gap-5">
           {/* Form */}
-          <Reveal>
-            <form onSubmit={onSubmit} className="bento-card md:col-span-3 space-y-4 !p-7">
+          <Reveal className="md:col-span-3">
+            <form onSubmit={onSubmit} className="bento-card space-y-4 !p-7">
+
               <div className="grid sm:grid-cols-2 gap-4">
                 <div className="space-y-1.5">
                   <label htmlFor="name" className="text-xs font-mono uppercase tracking-widest text-muted-foreground">
