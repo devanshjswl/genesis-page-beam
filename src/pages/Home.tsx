@@ -289,13 +289,14 @@ function Hero() {
 /* ------------------------------------------------------------------ */
 /* Bento section utilities                                            */
 /* ------------------------------------------------------------------ */
-function Reveal({ children, delay = 0 }: { children: React.ReactNode; delay?: number }) {
+function Reveal({ children, delay = 0, className }: { children: React.ReactNode; delay?: number; className?: string }) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 24 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-80px" }}
       transition={{ duration: 0.7, delay, ease: [0.22, 1, 0.36, 1] }}
+      className={className}
     >
       {children}
     </motion.div>
@@ -498,8 +499,8 @@ function About() {
       />
       <div className="max-w-6xl mx-auto relative">
         <div className="grid md:grid-cols-12 gap-10 md:gap-16">
-          <Reveal>
-            <div className="md:col-span-5 space-y-6">
+          <Reveal className="md:col-span-5">
+            <div className="space-y-6">
               <SectionLabel>About</SectionLabel>
               <h2 className="font-display text-4xl md:text-5xl font-bold tracking-tight">
                 Developer who <em className="text-gold not-italic">creates</em>. Creator who <em className="text-gold not-italic">codes</em>.
@@ -517,8 +518,8 @@ function About() {
             </div>
           </Reveal>
 
-          <Reveal delay={0.15}>
-            <div className="md:col-span-7 space-y-6 text-base md:text-lg leading-relaxed text-muted-foreground">
+          <Reveal delay={0.15} className="md:col-span-7">
+            <div className="space-y-6 text-base md:text-lg leading-relaxed text-muted-foreground">
               {me.biography.split("\n\n").map((para, i) => (
                 <p key={i}>{para}</p>
               ))}
@@ -656,8 +657,9 @@ function Contact() {
 
         <div className="grid md:grid-cols-5 gap-5">
           {/* Form */}
-          <Reveal>
-            <form onSubmit={onSubmit} className="bento-card md:col-span-3 space-y-4 !p-7">
+          <Reveal className="md:col-span-3">
+            <form onSubmit={onSubmit} className="bento-card space-y-4 !p-7">
+
               <div className="grid sm:grid-cols-2 gap-4">
                 <div className="space-y-1.5">
                   <label htmlFor="name" className="text-xs font-mono uppercase tracking-widest text-muted-foreground">
@@ -710,8 +712,9 @@ function Contact() {
           </Reveal>
 
           {/* Side info */}
-          <Reveal delay={0.1}>
-            <div className="md:col-span-2 space-y-4">
+          <Reveal delay={0.1} className="md:col-span-2">
+            <div className="space-y-4">
+
               <button
                 onClick={copyEmail}
                 className="bento-card w-full text-left group !p-6"
