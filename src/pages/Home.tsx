@@ -712,8 +712,9 @@ function Contact() {
           </Reveal>
 
           {/* Side info */}
-          <Reveal delay={0.1}>
-            <div className="md:col-span-2 space-y-4">
+          <Reveal delay={0.1} className="md:col-span-2">
+            <div className="space-y-4">
+
               <button
                 onClick={copyEmail}
                 className="bento-card w-full text-left group !p-6"
