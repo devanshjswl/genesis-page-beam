@@ -499,8 +499,8 @@ function About() {
       />
       <div className="max-w-6xl mx-auto relative">
         <div className="grid md:grid-cols-12 gap-10 md:gap-16">
-          <Reveal>
-            <div className="md:col-span-5 space-y-6">
+          <Reveal className="md:col-span-5">
+            <div className="space-y-6">
               <SectionLabel>About</SectionLabel>
               <h2 className="font-display text-4xl md:text-5xl font-bold tracking-tight">
                 Developer who <em className="text-gold not-italic">creates</em>. Creator who <em className="text-gold not-italic">codes</em>.
@@ -518,8 +518,8 @@ function About() {
             </div>
           </Reveal>
 
-          <Reveal delay={0.15}>
-            <div className="md:col-span-7 space-y-6 text-base md:text-lg leading-relaxed text-muted-foreground">
+          <Reveal delay={0.15} className="md:col-span-7">
+            <div className="space-y-6 text-base md:text-lg leading-relaxed text-muted-foreground">
               {me.biography.split("\n\n").map((para, i) => (
                 <p key={i}>{para}</p>
               ))}
