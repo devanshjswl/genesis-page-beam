@@ -280,7 +280,7 @@ function Hero() {
         transition={{ delay: 1.2 }}
         className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 text-[10px] font-mono uppercase tracking-[0.3em] text-muted-foreground/60"
       >
-        Scroll
+        
       </motion.div>
     </section>
   );
