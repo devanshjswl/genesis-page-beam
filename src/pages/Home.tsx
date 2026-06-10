@@ -313,8 +313,113 @@ function SectionLabel({ children }: { children: React.ReactNode }) {
 }
 
 /* ------------------------------------------------------------------ */
+/* Work — projects from Supabase                                      */
+/* ------------------------------------------------------------------ */
+function Work() {
+  const [projects, setProjects] = useState<DBProject[]>([]);
+  const [imageUrls, setImageUrls] = useState<Record<string, string>>({});
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let active = true;
+    (async () => {
+      const { data, error } = await supabase
+        .from("projects")
+        .select("id,title,blurb,tags,image_url,link_url,featured,sort_order,created_at")
+        .order("featured", { ascending: false })
+        .order("sort_order", { ascending: true })
+        .order("created_at", { ascending: false });
+      if (!active) return;
+      if (error) {
+        setLoading(false);
+        return;
+      }
+      const list = (data ?? []) as DBProject[];
+      setProjects(list);
+      const entries = await Promise.all(
+        list.map(async (p) => [p.id, (await resolveProjectImage(p.image_url)) ?? ""] as const),
+      );
+      if (!active) return;
+      setImageUrls(Object.fromEntries(entries.filter(([, u]) => u)));
+      setLoading(false);
+    })();
+    return () => { active = false; };
+  }, []);
+
+  if (!loading && projects.length === 0) return null;
+
+  return (
+    <section id="work" className="relative py-28 md:py-40 px-6 overflow-hidden">
+      <div className="max-w-6xl mx-auto relative">
+        <Reveal>
+          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6 mb-12">
+            <div className="space-y-4">
+              <SectionLabel>Work</SectionLabel>
+              <h2 className="font-display text-4xl md:text-6xl font-bold tracking-tight">
+                Things I've <span className="text-gold">built &amp; shipped.</span>
+              </h2>
+            </div>
+          </div>
+        </Reveal>
+
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          {projects.map((p, i) => {
+            const Wrap: any = p.link_url ? "a" : "div";
+            const wrapProps = p.link_url
+              ? { href: p.link_url, target: "_blank", rel: "noreferrer" }
+              : {};
+            return (
+              <Reveal key={p.id} delay={Math.min(i * 0.05, 0.3)} className={p.featured ? "sm:col-span-2" : ""}>
+                <Wrap
+                  {...wrapProps}
+                  className="bento-card !p-0 overflow-hidden flex flex-col h-full group hover:border-primary/40 transition-colors"
+                >
+                  {imageUrls[p.id] ? (
+                    <div className="relative overflow-hidden">
+                      <img
+                        src={imageUrls[p.id]}
+                        alt={p.title}
+                        loading="lazy"
+                        className={`w-full object-cover transition-transform duration-700 group-hover:scale-105 ${p.featured ? "h-72 md:h-96" : "h-52"}`}
+                      />
+                    </div>
+                  ) : (
+                    <div className={`w-full bg-secondary grid place-items-center text-muted-foreground text-xs ${p.featured ? "h-72 md:h-96" : "h-52"}`}>
+                      <Code2 className="size-6 opacity-40" />
+                    </div>
+                  )}
+                  <div className="p-6 flex flex-col flex-1">
+                    <div className="flex items-start justify-between gap-3">
+                      <h3 className="font-display font-semibold text-xl leading-tight">{p.title}</h3>
+                      {p.link_url && (
+                        <ArrowUpRight className="size-4 text-muted-foreground group-hover:text-primary transition-colors shrink-0 mt-1" />
+                      )}
+                    </div>
+                    <p className="text-sm text-muted-foreground mt-2 leading-relaxed flex-1">{p.blurb}</p>
+                    {p.tags.length > 0 && (
+                      <div className="flex flex-wrap gap-1.5 mt-4 pt-4 border-t border-border">
+                        {p.tags.slice(0, 5).map((t) => (
+                          <span key={t} className="text-[10px] font-mono uppercase tracking-wider px-2 py-1 rounded-md bg-secondary text-muted-foreground border border-border">
+                            {t}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </Wrap>
+              </Reveal>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ------------------------------------------------------------------ */
 /* About                                                              */
 /* ------------------------------------------------------------------ */
+
 function About() {
   return (
     <section id="about" className="relative py-28 md:py-40 px-6 overflow-hidden">
