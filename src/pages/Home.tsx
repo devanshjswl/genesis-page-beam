@@ -140,9 +140,11 @@ function Nav() {
   }, []);
 
   const links = [
+    { label: "Work", href: "#work" },
     { label: "About", href: "#about" },
     { label: "Contact", href: "#contact" },
   ];
+
 
   return (
     <motion.header
