@@ -682,8 +682,10 @@ export default function Home() {
       <Nav />
       <main>
         <Hero />
+        <Work />
         <About />
         <Contact />
+
       </main>
       <Footer />
     </div>
