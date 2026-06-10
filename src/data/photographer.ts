@@ -15,17 +15,17 @@ Alongside engineering, I run @the.poligion on Instagram, write & shoot YouTube v
   approach:
     'Code that feels effortless. Content that respects attention. I obsess over the last 10% — the easings, the loading states, the typography — because that is where craft lives.',
   location: 'India',
-  email: 'devanshjaiswal@example.com',
+  email: 'devanshxjaiswal@gmail.com',
   availability: 'Open to freelance & collaborations',
   socialLinks: {
-    instagram: 'https://instagram.com/the.poligion',
-    youtube: 'https://youtube.com/@devanshjaiswal',
-    github: 'https://github.com/devanshjaiswal',
-    linkedin: 'https://linkedin.com/in/devanshjaiswal',
+    instagram: 'https://instagram.com/devanshxjaiswal',
+    youtube: 'https://youtube.com/@devanshxjaiswal',
+    github: 'https://github.com/devanshjswl',
+    linkedin: 'https://linkedin.com/in/devanshxjaiswal',
   },
   stats: [
     { label: 'Projects shipped', value: '12+' },
-    { label: 'Instagram audience', value: '@the.poligion' },
+    { label: 'Instagram ', value: '@devanshxjaiswal' },
     { label: 'Years building', value: '3+' },
     { label: 'Coffee → code', value: '∞' },
   ],
