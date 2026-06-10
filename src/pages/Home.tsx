@@ -24,7 +24,6 @@ import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { photographerInfo as me } from "@/data/photographer";
 import { supabase } from "@/integrations/supabase/client";
-import { resolveProjectImage } from "@/lib/projectImage";
 
 
 /* ------------------------------------------------------------------ */
@@ -134,9 +133,7 @@ function Nav() {
   }, []);
 
   const links = [
-    { label: "Work", href: "#work" },
     { label: "About", href: "#about" },
-    { label: "Create", href: "#create" },
     { label: "Contact", href: "#contact" },
   ];
 
@@ -243,17 +240,11 @@ function Hero() {
           className="mt-10 flex flex-wrap items-center justify-center gap-3"
         >
           <a
-            href="#work"
+            href="#contact"
             className="inline-flex items-center gap-2 rounded-full bg-gold text-primary-foreground px-6 py-3 text-sm font-medium hover:opacity-90 transition shadow-gold shine"
           >
-            View my work
-            <ArrowUpRight className="size-4" />
-          </a>
-          <a
-            href="#contact"
-            className="inline-flex items-center gap-2 rounded-full border border-border bg-card/40 backdrop-blur px-6 py-3 text-sm font-medium hover:border-primary/50 transition"
-          >
             Get in touch
+            <ArrowUpRight className="size-4" />
           </a>
         </motion.div>
 
@@ -311,181 +302,6 @@ function SectionLabel({ children }: { children: React.ReactNode }) {
     </div>
   );
 }
-
-/* ------------------------------------------------------------------ */
-/* Work / Projects (DB-driven with hardcoded fallback)               */
-/* ------------------------------------------------------------------ */
-type DBProject = {
-  id: string;
-  title: string;
-  blurb: string;
-  tags: string[];
-  image_url: string | null;
-  link_url: string | null;
-  featured: boolean;
-};
-
-const fallbackProjects: Array<{
-  id: string;
-  title: string;
-  blurb: string;
-  tags: string[];
-  icon: typeof Calculator;
-  featured: boolean;
-  link_url: string | null;
-}> = [
-  {
-    id: "f1",
-    title: "JEE Main Score Calculator",
-    blurb:
-      "An ultra-smooth, instant score & percentile calculator built for JEE aspirants. Optimised for speed, animations and zero-friction input.",
-    tags: ["React", "TypeScript", "Tailwind"],
-    icon: Calculator,
-    featured: true,
-    link_url: null,
-  },
-  {
-    id: "f2",
-    title: "Real-Time Study Tracker",
-    blurb:
-      "A synchronized web app where study sessions update live across devices. Built with vanilla JS + Firebase Realtime DB.",
-    tags: ["HTML", "CSS", "JS", "Firebase"],
-    icon: BookOpen,
-    featured: false,
-    link_url: null,
-  },
-  {
-    id: "f3",
-    title: "@the.poligion",
-    blurb:
-      "Editorial Instagram page exploring culture, ideas & politics — content design, captions and growth, end to end.",
-    tags: ["Instagram", "Editorial"],
-    icon: Instagram,
-    featured: false,
-    link_url: me.socialLinks.instagram,
-  },
-];
-
-function Work() {
-  const [projects, setProjects] = useState<DBProject[]>([]);
-  const [imageUrls, setImageUrls] = useState<Record<string, string>>({});
-  const [loaded, setLoaded] = useState(false);
-
-  useEffect(() => {
-    (async () => {
-      const { data } = await supabase
-        .from("projects")
-        .select("id,title,blurb,tags,image_url,link_url,featured")
-        .order("featured", { ascending: false })
-        .order("sort_order", { ascending: true })
-        .order("created_at", { ascending: false });
-      const list = (data ?? []) as DBProject[];
-      setProjects(list);
-      setLoaded(true);
-      const entries = await Promise.all(
-        list.map(async (p) => [p.id, (await resolveProjectImage(p.image_url)) ?? ""] as const),
-      );
-      setImageUrls(Object.fromEntries(entries.filter(([, u]) => u)));
-    })();
-  }, []);
-
-  const usingDb = projects.length > 0;
-
-  return (
-    <section id="work" className="relative py-28 md:py-40 px-6">
-      <div className="max-w-6xl mx-auto">
-        <Reveal>
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-14">
-            <div className="space-y-4">
-              <SectionLabel>Selected work</SectionLabel>
-              <h2 className="font-display text-4xl md:text-6xl font-bold tracking-tight max-w-2xl">
-                Things I've built <span className="text-gold">&amp; shipped.</span>
-              </h2>
-            </div>
-            <p className="text-muted-foreground max-w-sm md:text-right">
-              A mix of full-stack web tools and content products. Every detail intentional.
-            </p>
-          </div>
-        </Reveal>
-
-        {!loaded ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5">
-            {[...Array(3)].map((_, i) => (
-              <div key={i} className="bento-card h-64 animate-pulse" />
-            ))}
-          </div>
-        ) : usingDb ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5">
-            {projects.map((p, i) => {
-              const card = (
-                <article className={`bento-card group h-full !p-0 overflow-hidden flex flex-col ${p.featured ? "lg:col-span-2" : ""}`}>
-                  {imageUrls[p.id] ? (
-                    <img src={imageUrls[p.id]} alt={p.title} className={`w-full object-cover ${p.featured ? "h-56 md:h-72" : "h-48"}`} />
-                  ) : (
-                    <div className={`w-full bg-secondary grid place-items-center ${p.featured ? "h-56 md:h-72" : "h-48"}`}>
-                      <Code2 className="size-8 text-muted-foreground/40" />
-                    </div>
-                  )}
-                  <div className="p-6 flex flex-col flex-1">
-                    <div className="flex items-start justify-between gap-3">
-                      <h3 className={`font-display font-semibold tracking-tight ${p.featured ? "text-2xl" : "text-lg"}`}>{p.title}</h3>
-                      {p.link_url && <ArrowUpRight className="size-5 text-muted-foreground group-hover:text-primary group-hover:-translate-y-0.5 group-hover:translate-x-0.5 transition-all shrink-0" />}
-                    </div>
-                    <p className="mt-3 text-sm text-muted-foreground leading-relaxed flex-1">{p.blurb}</p>
-                    {p.tags.length > 0 && (
-                      <div className="mt-5 flex flex-wrap gap-1.5">
-                        {p.tags.map((t) => (
-                          <span key={t} className="text-[10px] font-mono uppercase tracking-wider px-2 py-1 rounded-md bg-secondary text-muted-foreground border border-border">{t}</span>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                </article>
-              );
-              return (
-                <Reveal key={p.id} delay={i * 0.06}>
-                  {p.link_url ? (
-                    <a href={p.link_url} target="_blank" rel="noopener noreferrer" className="block h-full">{card}</a>
-                  ) : (
-                    card
-                  )}
-                </Reveal>
-              );
-            })}
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-4 auto-rows-[minmax(180px,auto)] gap-4 md:gap-5">
-            {fallbackProjects.map((p, i) => {
-              const Icon = p.icon;
-              return (
-                <Reveal key={p.id} delay={i * 0.06}>
-                  <article className={`bento-card group h-full ${p.featured ? "md:col-span-2 md:row-span-2 min-h-[360px]" : "md:col-span-2"}`}>
-                    <div className="relative flex flex-col h-full">
-                      <div className="flex items-start justify-between">
-                        <div className="size-11 rounded-xl bg-secondary border border-border grid place-items-center text-primary group-hover:bg-gold group-hover:text-primary-foreground group-hover:border-transparent transition-all duration-500">
-                          <Icon className="size-5" strokeWidth={1.6} />
-                        </div>
-                        <ArrowUpRight className="size-5 text-muted-foreground group-hover:text-primary transition-all" />
-                      </div>
-                      <h3 className={`mt-6 font-display font-semibold tracking-tight ${p.featured ? "text-2xl md:text-3xl" : "text-xl"}`}>{p.title}</h3>
-                      <p className="mt-3 text-sm text-muted-foreground leading-relaxed flex-1">{p.blurb}</p>
-                      <div className="mt-6 flex flex-wrap gap-1.5">
-                        {p.tags.map((t) => (
-                          <span key={t} className="text-[10px] font-mono uppercase tracking-wider px-2 py-1 rounded-md bg-secondary text-muted-foreground border border-border">{t}</span>
-                        ))}
-                      </div>
-                    </div>
-                  </article>
-                </Reveal>
-              );
-            })}
-          </div>
-        )}
-      </div>
-    </section>
-  );
-}
-
 
 /* ------------------------------------------------------------------ */
 /* About                                                              */
