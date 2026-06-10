@@ -19,6 +19,18 @@ import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { photographerInfo as me } from "@/data/photographer";
 import { supabase } from "@/integrations/supabase/client";
+import { resolveProjectImage } from "@/lib/projectImage";
+
+type DBProject = {
+  id: string;
+  title: string;
+  blurb: string;
+  tags: string[];
+  image_url: string | null;
+  link_url: string | null;
+  featured: boolean;
+};
+
 
 
 /* ------------------------------------------------------------------ */
