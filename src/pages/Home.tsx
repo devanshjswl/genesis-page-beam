@@ -9,11 +9,6 @@ import {
   Mail,
   Sparkles,
   Code2,
-  Calculator,
-  BookOpen,
-  Video,
-  Camera,
-  Zap,
   Send,
   Copy,
   Check,
@@ -357,57 +352,6 @@ function About() {
 }
 
 /* ------------------------------------------------------------------ */
-/* Create — the creator side                                          */
-/* ------------------------------------------------------------------ */
-function Create() {
-  const items = [
-    { icon: Instagram, label: "@the.poligion", note: "Editorial Instagram page", href: me.socialLinks.instagram },
-    { icon: Youtube, label: "YouTube", note: "Long & short form video", href: me.socialLinks.youtube },
-    { icon: Video, label: "Production", note: "Scripting · shoot · edit", href: me.socialLinks.youtube },
-    { icon: Camera, label: "Brand content", note: "Social ops for creators", href: me.socialLinks.instagram },
-  ];
-
-  return (
-    <section id="create" className="relative py-20 md:py-28 px-6 border-y border-border/50">
-      <div className="max-w-6xl mx-auto">
-        <Reveal>
-          <div className="flex items-center justify-between mb-10 flex-wrap gap-4">
-            <div className="flex items-center gap-3">
-              <Zap className="size-5 text-primary" />
-              <span className="font-display text-lg">The creator stack</span>
-            </div>
-            <span className="font-mono text-xs uppercase tracking-[0.25em] text-muted-foreground">
-              Beyond the code
-            </span>
-          </div>
-        </Reveal>
-
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
-          {items.map((it, i) => {
-            const Icon = it.icon;
-            return (
-              <Reveal key={it.label} delay={i * 0.06}>
-                <a
-                  href={it.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="bento-card group block h-full"
-                >
-                  <Icon className="size-5 text-primary mb-4" strokeWidth={1.6} />
-                  <div className="font-display font-semibold">{it.label}</div>
-                  <div className="text-xs text-muted-foreground mt-1">{it.note}</div>
-                  <ArrowUpRight className="absolute top-5 right-5 size-4 text-muted-foreground group-hover:text-primary transition" />
-                </a>
-              </Reveal>
-            );
-          })}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-/* ------------------------------------------------------------------ */
 /* Contact                                                            */
 /* ------------------------------------------------------------------ */
 function Contact() {
@@ -619,9 +563,7 @@ export default function Home() {
       <Nav />
       <main>
         <Hero />
-        <Work />
         <About />
-        <Create />
         <Contact />
       </main>
       <Footer />
