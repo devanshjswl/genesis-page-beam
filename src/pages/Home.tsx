@@ -364,9 +364,12 @@ function Work() {
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
           {projects.map((p, i) => {
-            const Wrap: any = p.link_url ? "a" : "div";
-            const wrapProps = p.link_url
-              ? { href: p.link_url, target: "_blank", rel: "noreferrer" }
+            const normalizedHref = p.link_url
+              ? /^https?:\/\//i.test(p.link_url) ? p.link_url : `https://${p.link_url.replace(/^\/+/, "")}`
+              : null;
+            const Wrap: any = normalizedHref ? "a" : "div";
+            const wrapProps = normalizedHref
+              ? { href: normalizedHref, target: "_blank", rel: "noreferrer noopener" }
               : {};
             return (
               <Reveal key={p.id} delay={Math.min(i * 0.05, 0.3)} className={p.featured ? "sm:col-span-2" : ""}>
