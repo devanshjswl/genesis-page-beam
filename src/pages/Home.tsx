@@ -12,6 +12,7 @@ import {
   Send,
   Copy,
   Check,
+  Phone,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -184,11 +185,13 @@ function Nav() {
           </nav>
 
           <a
-            href="#contact"
+            href="https://wa.me/918273512178"
+            target="_blank"
+            rel="noopener noreferrer"
             className="inline-flex items-center gap-1.5 rounded-full bg-gold text-primary-foreground text-xs font-medium px-4 py-2 hover:opacity-90 transition shine"
           >
+            <Phone className="size-3.5" />
             Let's talk
-            <ArrowUpRight className="size-3.5" />
           </a>
         </div>
       </div>
